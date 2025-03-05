@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 
 export default function SignInViewPage() {
   return (
-    <div className='relative h-screen flex-col items-center justify-center lg:max-w-none'>
-      <div className='flex h-full items-center p-4 lg:p-8'>
-        <div className='borer mx-auto flex w-full flex-col justify-center space-y-6 rounded-lg border border-indigo-500 p-4 sm:w-[350px]'>
+    <div className='relative h-screen flex-col items-center justify-center lg:max-w-none lg:bg-slate-200'>
+      <div className='flex h-full items-center px-4 lg:p-8'>
+        <div className='mx-auto flex w-full flex-col justify-center rounded-lg p-4 sm:w-[350px] lg:bg-white'>
           <div className='flex flex-col space-y-2 text-center'>
-            <h1 className='text-2xl font-semibold tracking-tight'>
+            <h1 className='mb-6 text-2xl font-semibold tracking-tight'>
               Register and connect to Mng
             </h1>
             {/* <p className='text-sm text-muted-foreground'>
@@ -25,23 +25,6 @@ export default function SignInViewPage() {
             </p> */}
           </div>
           <UserAuthForm />
-          <p className='px-8 text-center text-sm text-muted-foreground'>
-            By clicking continue, you agree to our{' '}
-            <Link
-              href='/terms'
-              className='underline underline-offset-4 hover:text-primary'
-            >
-              Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link
-              href='/privacy'
-              className='underline underline-offset-4 hover:text-primary'
-            >
-              Privacy Policy
-            </Link>
-            .
-          </p>
         </div>
       </div>
     </div>
