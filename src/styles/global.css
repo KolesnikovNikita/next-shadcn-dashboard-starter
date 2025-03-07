@@ -1,0 +1,20 @@
+#login-page {
+  background: linear-gradient(162deg, #192b4a 28%, white 55%, #009f6d 89%);
+  background-size: 300% 300%;
+  animation: gradientAnimation 10s ease forwards;
+  height: 100vh;
+  margin: 0;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 50% 50%;
+    background-size: 100% 100%;
+  }
+}

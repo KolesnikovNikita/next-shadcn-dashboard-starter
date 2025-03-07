@@ -17,6 +17,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import AgentImage from '@/assets/img/agent-icon.svg';
+import PlayerImage from '@/assets/img/player-icon.svg';
+import EnterIcon from '@/assets/img/enter-icon.svg';
+import Image from 'next/image';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' })
@@ -40,7 +44,6 @@ export default function UserAuthForm() {
   const toggleRole = () => {
     setRole((prev) => !prev);
     setValue('role', isRole ? 'player' : 'agent');
-    console.log(isRole);
   };
 
   const onSubmit = async (data: UserFormValue) => {
@@ -70,6 +73,7 @@ export default function UserAuthForm() {
                     {...field}
                   />
                 </FormControl>
+
                 <div className='mb-6'>
                   <label className='relative flex h-12 w-full cursor-pointer items-center rounded-full border bg-white shadow-sm'>
                     <span
@@ -94,10 +98,28 @@ export default function UserAuthForm() {
                     />
 
                     <div
-                      className={`flex h-12 w-16 items-center justify-center rounded-full bg-green-900 transition-all duration-300 ${
+                      className={`relative flex h-12 w-16 items-center justify-center rounded-full bg-green-900 transition-all duration-300 ${
                         isRole ? 'bg-yellow-300' : 'bg-green-300'
                       }`}
-                    ></div>
+                    >
+                      {isRole ? (
+                        <Image
+                          className='absolute left-2'
+                          width={30}
+                          height={30}
+                          alt='agent'
+                          src={AgentImage}
+                        />
+                      ) : (
+                        <Image
+                          className='absolute left-10'
+                          width={30}
+                          height={30}
+                          alt='agent'
+                          src={PlayerImage}
+                        />
+                      )}
+                    </div>
                     <span
                       className={`flex-1 text-center font-bold transition ${
                         !isRole ? 'text-yellow-500 underline' : 'text-gray-400'
@@ -113,9 +135,16 @@ export default function UserAuthForm() {
           />
 
           <Button
-            className='mb-6 ml-auto mt-6 h-12 w-full bg-blue-500 text-base font-semibold text-white'
+            className='mb-6 ml-auto mt-6 h-12 w-full cursor-pointer bg-green-500 text-base font-semibold uppercase text-white'
             type='submit'
           >
+            <Image
+              className='pr-2'
+              src={EnterIcon}
+              width={24}
+              height={24}
+              alt='login'
+            />{' '}
             Register
           </Button>
         </form>
