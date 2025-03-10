@@ -1,5 +1,6 @@
-import VerificationSteps from './VerificationSteps';
+import { redirect } from 'next/navigation';
 
 export default function VerificationPage() {
-  return <VerificationSteps />;
+  redirect('verification/email');
+  return null;
 }
