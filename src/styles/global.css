@@ -18,3 +18,28 @@
     background-size: 100% 100%;
   }
 }
+
+.custom-phone-input {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.custom-phone-input input {
+  margin-top: 8px;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.custom-phone-input .PhoneInputCountry {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.custom-phone-input .PhoneInputCountryIcon {
+  width: 24px;
+  height: 18px;
+}

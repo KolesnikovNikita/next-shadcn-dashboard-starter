@@ -1,7 +1,7 @@
 'use client';
 import Stepper from './Stepper';
-
 import { usePathname } from 'next/navigation';
+import '@/styles/global.css';
 
 export default function VerificationLayout({
   children
