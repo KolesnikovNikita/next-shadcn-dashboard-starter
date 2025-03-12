@@ -47,40 +47,42 @@ export default function EmailVerification() {
   };
   return (
     <>
-      <h2 className='mb-4'>Verify Email</h2>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-4'
-        >
-          <FormField
-            control={form.control}
-            name='email'
-            rules={{
-              required: 'Email required',
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: 'Not valid email'
-              }
-            }}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} type='email' placeholder='Verify email' />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className='uppercase' type='submit'>
-            Send verification code
-          </Button>
-        </form>
-      </Form>
+      <div className='mb-8'>
+        <h2 className='mb-4'>Verify Email</h2>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='w-full space-y-2'
+          >
+            <FormField
+              control={form.control}
+              name='email'
+              rules={{
+                required: 'Email required',
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Not valid email'
+                }
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input {...field} type='email' placeholder='Verify email' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button className='uppercase' type='submit'>
+              Send verification code
+            </Button>
+          </form>
+        </Form>
+      </div>
 
       {/* Code enter field*/}
 
-      {isCodeSent && <OtpInput onVerify={verifyCode} />}
+      {isCodeSent && <OtpInput />}
     </>
   );
 }

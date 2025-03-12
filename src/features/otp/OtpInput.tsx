@@ -1,66 +1,78 @@
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { useForm } from 'react-hook-form';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator
+} from '@/components/ui/input-otp';
 import { Button } from '@/components/ui/button';
 
-interface OtpInputProps {
-  onVerify: (code: string) => Promise<void>; // Code checking function
-}
+export default function OtpVerification() {
+  const [isCodeSent, setIsCodeSent] = useState(true);
+  const [otpCode, setOtpCode] = useState('');
 
-export default function OtpInput({ onVerify }: OtpInputProps) {
-  const [verificationCode, setVerificationCode] = useState<string[]>(
-    Array(6).fill('')
-  );
+  const { handleSubmit } = useForm();
 
-  // Changing symbol in code
-  const handleCodeChange = (value: string, index: number) => {
-    const newCode = [...verificationCode];
-    newCode[index] = value;
-    setVerificationCode(newCode);
-
-    //  Automatic focus on next input
-    if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-input-${index + 1}`);
-      if (nextInput) nextInput.focus();
+  const handleChange = (value: string) => {
+    if (value.length <= 6) {
+      setOtpCode(value);
     }
   };
 
   // Send Code
-  const handleSubmit = async () => {
-    const code = verificationCode.join('');
-    await onVerify(code);
+  const sendCode = async () => {
+    console.log('OTP sent');
+    setIsCodeSent(true);
   };
 
-  // Clear code
-  const handleClearCode = () => {
-    setVerificationCode(Array(6).fill(''));
-    const firstInput = document.getElementById('otp-input-0');
-    if (firstInput) firstInput.focus();
+  const verifyCode = async () => {
+    console.log('Code to verify:', otpCode);
+    alert('Code verified successfully!');
   };
 
   return (
-    <div className='mt-6'>
+    <div className='mx-auto max-w-md'>
       <h3 className='mb-4'>Enter OTP Code</h3>
-      <div className='mb-4 flex justify-between space-x-1'>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Input
-            key={index}
-            id={`otp-input-${index}`}
-            type='text'
-            maxLength={1}
-            value={verificationCode[index]}
-            onChange={(e) => handleCodeChange(e.target.value, index)}
-            className='w-12 rounded-none text-center'
-          />
-        ))}
-      </div>
-      <div className='flex items-center justify-between'>
-        <Button onClick={handleSubmit} className='relative px-8 uppercase'>
-          Verify Code
+
+      {isCodeSent && (
+        <form onSubmit={handleSubmit(verifyCode)} className='space-y-4'>
+          <InputOTP maxLength={6} value={otpCode} onChange={handleChange}>
+            <InputOTPGroup className='flex gap-x-2'>
+              {[0, 1, 2].map((index) => (
+                <InputOTPSlot className='h-12 w-12' key={index} index={index} />
+              ))}
+            </InputOTPGroup>
+
+            <InputOTPSeparator />
+
+            <InputOTPGroup className='flex gap-x-2'>
+              {[3, 4, 5].map((index) => (
+                <InputOTPSlot className='h-12 w-12' key={index} index={index} />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>
+
+          <div className='flex items-center justify-between'>
+            <Button type='submit' className='px-6 uppercase'>
+              Verify Code
+            </Button>
+            <Button
+              type='button'
+              variant='outline'
+              onClick={() => setOtpCode('')}
+              className='px-6 uppercase'
+            >
+              Clear
+            </Button>
+          </div>
+        </form>
+      )}
+      {!isCodeSent && (
+        <Button onClick={sendCode} className='mt-4 uppercase'>
+          Send OTP
         </Button>
-        <Button onClick={handleClearCode} className='relative px-8 uppercase'>
-          Clear
-        </Button>
-      </div>
+      )}
     </div>
   );
 }

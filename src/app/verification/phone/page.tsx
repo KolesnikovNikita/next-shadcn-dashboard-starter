@@ -64,61 +64,63 @@ export default function PhoneVerification() {
   };
   return (
     <>
-      <h2 className='mb-4'>Verify Phone</h2>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='w-full space-y-4'
-        >
-          <FormField
-            control={form.control}
-            name='tel'
-            rules={{
-              required: 'Phone number is required',
-              validate: (value) => {
-                const phoneNumber = parsePhoneNumberFromString(value);
-                return phoneNumber?.isValid() || 'Invalid phone number';
-              }
-            }}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <PhoneInput
-                    className='custom-phone-input'
-                    international
-                    defaultCountry={userCountry as any}
-                    placeholder='Enter phone number'
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className='flex flex-col space-y-2'>
-            <Button className='uppercase' type='submit'>
-              Send SMS
-            </Button>
-            <Button
-              className='uppercase'
-              type='button'
-              onClick={() => console.log('Call me')}
-            >
-              Call me and dictate
-            </Button>
-            <Button
-              className='uppercase'
-              type='button'
-              onClick={() => console.log('WhatsApp')}
-            >
-              use whatsapp
-            </Button>
-          </div>
-        </form>
-      </Form>
+      <div className='mb-8'>
+        <h2 className='mb-4'>Verify Phone</h2>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='w-full space-y-4'
+          >
+            <FormField
+              control={form.control}
+              name='tel'
+              rules={{
+                required: 'Phone number is required',
+                validate: (value) => {
+                  const phoneNumber = parsePhoneNumberFromString(value);
+                  return phoneNumber?.isValid() || 'Invalid phone number';
+                }
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PhoneInput
+                      className='custom-phone-input'
+                      international
+                      defaultCountry={userCountry as any}
+                      placeholder='Enter phone number'
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className='flex flex-col space-y-2'>
+              <Button className='uppercase' type='submit'>
+                Send SMS
+              </Button>
+              <Button
+                className='uppercase'
+                type='button'
+                onClick={() => console.log('Call me')}
+              >
+                Call me and dictate
+              </Button>
+              <Button
+                className='uppercase'
+                type='button'
+                onClick={() => console.log('WhatsApp')}
+              >
+                use whatsapp
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
 
-      {isCodeSent && <OtpInput onVerify={verifyCode} />}
+      {isCodeSent && <OtpInput />}
     </>
   );
 }
