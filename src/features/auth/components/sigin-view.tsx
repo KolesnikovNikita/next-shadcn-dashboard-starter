@@ -24,7 +24,7 @@ export default function SignInViewPage() {
           alt='logo'
         />
       </div>
-      <div className='flex h-full items-center px-4 lg:p-8'>
+      <div className='flex h-full items-center px-4 shadow-lg lg:p-8'>
         <div className='mx-auto flex w-full flex-col justify-center rounded-lg bg-white p-4 sm:w-[350px] lg:h-[450px] lg:w-[400px] lg:py-10 lg:shadow-lg'>
           <div className='flex flex-col space-y-2 text-center'>
             <h1 className='mb-6 font-roboto text-2xl font-semibold tracking-tight'>
