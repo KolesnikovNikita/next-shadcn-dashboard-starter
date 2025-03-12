@@ -65,7 +65,7 @@ export default function UserAuthForm() {
                   <Input
                     className='mb-6'
                     type='text'
-                    placeholder='Player Username'
+                    placeholder='Enter Username'
                     {...field}
                   />
                 </FormControl>
