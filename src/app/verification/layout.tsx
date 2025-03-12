@@ -20,7 +20,7 @@ export default function VerificationLayout({
   const currentStep = steps.indexOf(pathname);
 
   return (
-    <div className='mx-auto flex flex-col justify-center px-4 pt-4 md:max-w-sm'>
+    <div className='mx-auto flex flex-col justify-center px-4 pt-4 md:max-w-sm lg:max-w-md'>
       <h1 className='mb-7 text-2xl font-bold'>Verification</h1>
       <h2 className='mb-7 text-lg font-semibold'>Step {currentStep + 1} </h2>
       <p></p>
