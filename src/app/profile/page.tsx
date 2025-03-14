@@ -39,7 +39,7 @@ export default function UserProfile() {
                     pahanimg10@gmail.com
                   </span>
                 </div>
-                <div className='flex flex-col justify-between lg:w-full'>
+                <div className='mb-2 flex flex-col justify-between lg:mb-0 lg:w-full'>
                   <div className='mb-3 flex'>
                     <span className='pr-2 text-gray-600'>Phone</span>{' '}
                     <Badge className='bg-custom-green text-white'>
@@ -57,7 +57,7 @@ export default function UserProfile() {
                 </div>
               </div>
               <div className='flex-row lg:gap-2 xl:flex'>
-                <div className='flex flex-col justify-between lg:w-full'>
+                <div className='mb-2 flex flex-col justify-between lg:mb-0 lg:w-full'>
                   <span className='mb-2 text-gray-600'>Country</span>
                   <span className='border p-2 font-medium'>Sri Lanka</span>
                 </div>

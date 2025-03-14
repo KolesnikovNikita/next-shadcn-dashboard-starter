@@ -17,7 +17,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import AgentImage from '@/assets/img/agent-icon.svg';
 import PlayerImage from '@/assets/img/player-icon.svg';
 import EnterIcon from '@/assets/img/enter-icon.svg';
 import Image from 'next/image';
@@ -108,7 +107,7 @@ export default function UserAuthForm() {
                           width={30}
                           height={30}
                           alt='agent'
-                          src={AgentImage}
+                          src=''
                         />
                       ) : (
                         <Image
