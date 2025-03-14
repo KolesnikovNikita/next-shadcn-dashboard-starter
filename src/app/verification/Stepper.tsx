@@ -28,7 +28,7 @@ export default function Stepper({ step }: StepperProps) {
             index !== steps.length - 1
               ? `after:inline-block after:h-1 after:w-16 after:border-4 after:border-b after:content-[''] ${
                   isCompleted
-                    ? 'after:border-blue-100'
+                    ? 'after:border-custom-gold'
                     : 'after:border-gray-100'
                 }`
               : '';
@@ -39,7 +39,7 @@ export default function Stepper({ step }: StepperProps) {
             >
               <span
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                  isCompleted ? 'bg-blue-100' : 'bg-gray-100'
+                  isCompleted ? 'bg-custom-gold' : 'bg-gray-100'
                 } dark:bg-gray-700 lg:h-12 lg:w-12`}
               >
                 <Icon className='h-4 w-4 text-gray-500 dark:text-gray-100 lg:h-5 lg:w-5' />
