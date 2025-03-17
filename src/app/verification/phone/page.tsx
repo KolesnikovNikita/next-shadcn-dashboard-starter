@@ -13,6 +13,13 @@ import { Button } from '@/components/ui/button';
 import PhoneInput, { getCountries } from 'react-phone-number-input';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import OtpInput from '@/features/otp/OtpInput';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 
 type FormValues = {
   tel: string;
@@ -22,6 +29,7 @@ export default function PhoneVerification() {
   const phoneNumber = parsePhoneNumberFromString('+1234567890');
   const [userCountry, setUserCountry] = useState<string | undefined>('US');
   const [isCodeSent, setIsCodeSent] = useState(true);
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
   // Fetch User country code
 
@@ -60,7 +68,10 @@ export default function PhoneVerification() {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log('Submitted phone: ', data.tel);
+    if (!selectedMethod) {
+      alert('Please select a verification method');
+      return;
+    }
   };
   return (
     <>
@@ -97,24 +108,24 @@ export default function PhoneVerification() {
                 </FormItem>
               )}
             />
-            <div className='flex flex-col space-y-2'>
-              <Button className='uppercase' type='submit'>
-                Send SMS
-              </Button>
-              <Button
-                className='uppercase'
-                type='button'
-                onClick={() => console.log('Call me')}
-              >
-                Call me and dictate
-              </Button>
-              <Button
-                className='uppercase'
-                type='button'
-                onClick={() => console.log('WhatsApp')}
-              >
-                use whatsapp
-              </Button>
+            <div className='flex flex-col space-y-3'>
+              <div>
+                <Select onValueChange={setSelectedMethod}>
+                  <SelectTrigger className='w-full px-5 py-4'>
+                    <SelectValue placeholder='Pick a verification option' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='light'>Send SMS</SelectItem>
+                    <SelectItem value='dark'>Call me and dictate</SelectItem>
+                    <SelectItem value='system'>Use whatsapp</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Button className='w-full uppercase' type='submit'>
+                  Confirm
+                </Button>
+              </div>
             </div>
           </form>
         </Form>
