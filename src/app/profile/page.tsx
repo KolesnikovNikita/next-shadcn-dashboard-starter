@@ -1,7 +1,11 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import UserDefault from '@/assets/img/logo-2.png';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import UserDefault from '@/assets/img/random-user-photo.jpeg';
+import UserPassport from '@/assets/img/user-passport-photo.jpg';
+
 import { ShieldCheck } from 'lucide-react';
 
 export default function UserProfile() {
@@ -14,9 +18,9 @@ export default function UserProfile() {
         <Card>
           <CardContent className='space-y-4 p-4 lg:p-7'>
             {/* Profile Image */}
-            <div className='flex justify-center'>
+            <div className='mx-auto flex h-[100px] w-[100px] justify-center overflow-y-auto'>
               <Image
-                src={UserDefault} //  path to user image
+                src={UserDefault}
                 alt='User Profile Image'
                 width={100}
                 height={100}
@@ -79,12 +83,100 @@ export default function UserProfile() {
         </Card>
 
         <Card>
-          <CardContent className='flex p-4 lg:p-7'>
-            <span className='mr-2 text-gray-600'>Documents</span>
-            <Badge className='bg-custom-green text-white'>
-              <ShieldCheck className='h-4 w-4 pr-1' />
-              Verified
-            </Badge>
+          <CardContent className='flex flex-col p-4 lg:p-7'>
+            <div className='mb-2'>
+              <span className='mr-2 text-gray-600'>Documents</span>
+              <Badge className='bg-custom-green text-white'>
+                <ShieldCheck className='h-4 w-4 pr-1' />
+                Verified
+              </Badge>
+            </div>
+
+            {/* Passport Gallery  */}
+
+            <div className='grid grid-cols-1 gap-3 border-2 p-4 sm:grid-cols-3'>
+              <Dialog>
+                <DialogTrigger>
+                  <AspectRatio
+                    ratio={4 / 3}
+                    className='cursor-pointer overflow-y-auto'
+                  >
+                    <Image
+                      priority={false}
+                      alt='user-documents'
+                      src={UserPassport}
+                      width={100}
+                      height={150}
+                      className='h-full w-full rounded-sm object-cover'
+                    />
+                  </AspectRatio>
+                </DialogTrigger>
+                <DialogContent>
+                  <Image
+                    src={UserPassport}
+                    priority={true}
+                    alt='Passport'
+                    width={600}
+                    height={400}
+                    className='mx-auto rounded-md object-cover'
+                  />
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger>
+                  <AspectRatio
+                    ratio={4 / 3}
+                    className='cursor-pointer overflow-y-auto'
+                  >
+                    <Image
+                      priority={false}
+                      alt='user-documents'
+                      src={UserPassport}
+                      width={100}
+                      height={150}
+                      className='h-full w-full rounded-sm object-cover'
+                    />
+                  </AspectRatio>
+                </DialogTrigger>
+                <DialogContent>
+                  <Image
+                    src={UserPassport}
+                    priority={true}
+                    alt='Passport'
+                    width={600}
+                    height={400}
+                    className='mx-auto rounded-md object-cover'
+                  />
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger>
+                  <AspectRatio
+                    ratio={4 / 3}
+                    className='cursor-pointer overflow-y-auto'
+                  >
+                    <Image
+                      priority={false}
+                      alt='user-documents'
+                      src={UserPassport}
+                      width={100}
+                      height={150}
+                      className='h-full w-full rounded-sm object-cover'
+                    />
+                  </AspectRatio>
+                </DialogTrigger>
+                <DialogContent>
+                  <Image
+                    src={UserPassport}
+                    priority={true}
+                    alt='Passport'
+                    width={600}
+                    height={400}
+                    className='mx-auto rounded-md object-cover'
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
           </CardContent>
         </Card>
       </div>
