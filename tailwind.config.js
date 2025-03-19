@@ -9,6 +9,7 @@ module.exports = {
     './src/**/*.{ts,tsx}',
     './sections/**/*.{ts,tsx}'
   ],
+
   theme: {
     container: {
       center: 'true',
@@ -19,6 +20,10 @@ module.exports = {
     },
     extend: {
       fontFamily: { roboto: ['var(--font-roboto)', 'sans-serif'] },
+      backgroundImage: {
+        'custom-gradient':
+          'linear-gradient(162deg, #192b4a 28%, white 55%, #009f6d 89%)'
+      },
 
       colors: {
         border: 'hsl(var(--border))',
@@ -70,8 +75,8 @@ module.exports = {
         'color-4': 'hsl(var(--color-4))',
         'color-5': 'hsl(var(--color-5))',
 
-        'custom-gold': '#d4af37',
-        'custom-green': '#009f6d'
+        'custom-green': '#009f6d',
+        'custom-gold': '#d4af37'
       },
       borderRadius: {
         lg: 'var(--radius)',

@@ -37,7 +37,7 @@ export default async function RootLayout({
       className={`${(lato.className, roboto.className)}`}
       suppressHydrationWarning
     >
-      <body className={'overflow-hidden'}>
+      <body className={'overflow-y-auto'}>
         <NextTopLoader showSpinner={false} />
         <NuqsAdapter>
           <Providers session={session}>
