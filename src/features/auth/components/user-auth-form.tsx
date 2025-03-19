@@ -17,9 +17,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import { LogIn } from 'lucide-react';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
+  userName: z.string().min(3, { message: 'Enter a valid username' }),
+  role: z.enum(['agent', 'player'])
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
@@ -28,24 +30,23 @@ export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, startTransition] = useTransition();
+  const [isRole, setRole] = useState(true);
 
   const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(formSchema),
+    defaultValues: { userName: '', role: 'agent' }
   });
-
-  const { register, handleSubmit, setValue } = useForm();
-
-  const [isRole, setRole] = useState(true);
 
   const toggleRole = () => {
     setRole((prev) => !prev);
-    setValue('role', isRole ? 'player' : 'agent');
+    form.setValue('role', isRole ? 'player' : 'agent');
   };
 
   const onSubmit = async (data: UserFormValue) => {
     startTransition(() => {
       signIn('credentials', {
-        email: data.email,
+        userName: data.userName,
+        role: data.role,
         callbackUrl: callbackUrl ?? '/dashboard'
       });
       toast.success('Signed In Successfully!');
@@ -58,7 +59,7 @@ export default function UserAuthForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
           <FormField
             control={form.control}
-            name='email'
+            name='userName'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -89,7 +90,7 @@ export default function UserAuthForm() {
 
                     <input
                       type='hidden'
-                      {...register('role')}
+                      {...form.register('role')}
                       value={isRole ? 'agent' : 'player'}
                     />
 
@@ -159,16 +160,9 @@ export default function UserAuthForm() {
             className='mb-6 ml-auto mt-6 h-12 w-full cursor-pointer bg-green-500 text-base font-semibold uppercase text-white'
             type='submit'
           >
+            {loading ? 'Signing In...' : 'Sign In'}
             <span className='pr-2'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='#fff'
-                viewBox='0 0 512 512'
-                height={16}
-                width={16}
-              >
-                <path d='M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z' />
-              </svg>
+              <LogIn />
             </span>
             Register
           </Button>
