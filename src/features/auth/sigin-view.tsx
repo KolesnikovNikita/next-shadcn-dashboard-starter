@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import UserAuthForm from './user-auth-form';
+import UserAuthForm from './components/user-auth-form';
 import Logo from '@/assets/img/logo-2.png';
 import Image from 'next/image';
 import '@/styles/global.css';
