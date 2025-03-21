@@ -17,11 +17,13 @@ export default function SignInViewPage() {
     >
       <div className='absolute left-1/2 top-10 -translate-x-1/2 lg:top-5'>
         <Image
-          src={Logo}
           className='rounded'
+          src={Logo}
           width={185}
           height={130}
           alt='logo'
+          priority
+          style={{ width: 'auto', height: 'auto' }}
         />
       </div>
       <div className='flex h-full items-center px-4 shadow-lg lg:p-8'>

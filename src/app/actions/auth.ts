@@ -1,15 +1,16 @@
 'use server';
 import { LoginFormSchema, FormState } from '@/schemas/auth';
 
-export async function loginUp(state: FormState, formData: FormData) {
+export async function loginUp(
+  _: FormState,
+  formData: FormData
+): Promise<FormState> {
   const data = Object.fromEntries(formData.entries());
 
   const validatedFields = LoginFormSchema.safeParse({
-    username: formData.get('username'),
+    username: data.username,
     tenant: Number(data.tenant)
   });
-
-  console.log('validatedFields:', validatedFields);
 
   if (!validatedFields.success) {
     return {
@@ -17,5 +18,30 @@ export async function loginUp(state: FormState, formData: FormData) {
     };
   }
 
-  // Call the provider or db to create a user...
+  try {
+    const response = await fetch(
+      `https://mngapi.azurewebsites.net/api/Account/login-link?username=${encodeURIComponent(data.username)}&tenant=${data.tenant}`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'text/plain'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      return { errors: { general: errorMessage } };
+    }
+
+    const result = await response.text();
+    console.log('result:', result);
+    return { message: 'Success', result };
+  } catch (error) {
+    return {
+      errors: {
+        general: error instanceof Error ? error.message : 'Unknown error'
+      }
+    };
+  }
 }

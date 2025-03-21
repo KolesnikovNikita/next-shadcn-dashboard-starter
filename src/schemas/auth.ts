@@ -5,16 +5,17 @@ export const LoginFormSchema = z.object({
     .string()
     .min(3, { message: 'Name must be at least 3 characters long.' })
     .trim(),
-  tenant: z.number().refine((val) => val === 1 || val === 2, {
-    message: 'Invalid tenant value.'
-  })
+  tenant: z.number()
 });
 
 export type FormState =
   | {
       errors?: {
         username?: string[];
+        tenant?: string[];
+        general?: string;
       };
       message?: string;
+      result?: string;
     }
   | undefined;

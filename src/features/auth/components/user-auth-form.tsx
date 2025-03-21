@@ -54,11 +54,11 @@ export default function UserAuthForm() {
                     {...field}
                   />
                 </FormControl>
-                {state?.errors?.username?.map((err, index) => (
+                {/* {state?.errors?.username?.map((err, index) => (
                   <p key={index} className='text-red-500'>
                     {err}
                   </p>
-                ))}
+                ))} */}
                 <div className='mb-6'>
                   <label className='relative flex h-12 w-full cursor-pointer items-center rounded-full border bg-white shadow-sm'>
                     <span
