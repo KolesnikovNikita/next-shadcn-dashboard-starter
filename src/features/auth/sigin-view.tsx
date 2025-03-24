@@ -11,29 +11,28 @@ export const metadata: Metadata = {
 
 export default function SignInViewPage() {
   return (
-    <div
-      id='login-page'
-      className='relative h-screen flex-col items-center justify-center bg-white lg:max-w-none'
-    >
-      <div className='absolute left-1/2 top-10 -translate-x-1/2 lg:top-5'>
-        <Image
-          className='rounded'
-          src={Logo}
-          width={185}
-          height={130}
-          alt='logo'
-          priority
-          style={{ width: 'auto', height: 'auto' }}
-        />
-      </div>
-      <div className='flex h-full items-center px-4 shadow-lg lg:p-8'>
-        <div className='mx-auto flex w-full flex-col justify-center rounded-lg bg-white p-4 sm:w-[350px] lg:h-[450px] lg:w-[400px] lg:py-10 lg:shadow-lg'>
-          <div className='flex flex-col space-y-2 text-center'>
-            <h1 className='mb-6 font-roboto text-2xl font-semibold tracking-tight'>
-              Register and connect to Mng
-            </h1>
+    <div id='login-page' className='bg-white lg:max-w-none'>
+      <div className='flex h-full flex-col items-center justify-center space-y-5'>
+        <div className=''>
+          <Image
+            className='ml-auto mr-auto rounded'
+            src={Logo}
+            width={185}
+            height={130}
+            alt='logo'
+            priority
+            style={{ width: 'auto', height: 'auto' }}
+          />
+        </div>
+        <div className='flex items-center'>
+          <div className='mx-auto flex w-[350px] flex-col justify-center rounded-lg bg-white px-6 py-5 md:w-[400px] lg:shadow-lg'>
+            <div className='flex flex-col space-y-2 text-center'>
+              <h1 className='mb-6 font-roboto text-2xl font-semibold tracking-tight'>
+                Register and connect to Mng
+              </h1>
+            </div>
+            <UserAuthForm />
           </div>
-          <UserAuthForm />
         </div>
       </div>
     </div>

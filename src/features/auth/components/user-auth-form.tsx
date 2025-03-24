@@ -1,5 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -11,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useActionState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LogIn } from 'lucide-react';
+import { LogIn, X } from 'lucide-react';
 import { loginUp } from '@/app/actions/auth';
 import { LoginFormSchema } from '@/schemas/auth';
 
@@ -23,6 +24,7 @@ enum UserRole {
 export default function UserAuthForm() {
   const [state, action, pending] = useActionState(loginUp, undefined);
   const [isRole, setRole] = useState(true);
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -54,11 +56,11 @@ export default function UserAuthForm() {
                     {...field}
                   />
                 </FormControl>
-                {/* {state?.errors?.username?.map((err, index) => (
+                {state?.errors?.username?.map((err, index) => (
                   <p key={index} className='text-red-500'>
                     {err}
                   </p>
-                ))} */}
+                ))}
                 <div className='mb-6'>
                   <label className='relative flex h-12 w-full cursor-pointer items-center rounded-full border bg-white shadow-sm'>
                     <span
@@ -156,6 +158,29 @@ export default function UserAuthForm() {
           </Button>
         </form>
       </Form>
+
+      {showLoginForm && (
+        <Card className='bg-green-300 py-3'>
+          <CardContent className='flex flex-col justify-between space-y-3 pb-2'>
+            <p className='block text-green-800'>
+              User with id f5hjwjhc7ewhbwehjcb authenticated link send
+              successfully
+            </p>
+            <p className='block text-green-800'>
+              Please <span className='font-bold underline'>login</span> to
+              player website and click on the provided link with authorization
+              code to continue. Back to{' '}
+              <span className='font-bold underline'>main</span> page
+            </p>
+            <p className='block text-center font-bold text-green-700'>
+              Redirecting in: 4 seconds
+            </p>
+            <Button className='w-full bg-green-700 text-base font-semibold uppercase text-white'>
+              <X className='mr-1 h-5 w-5' /> Reset
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }
