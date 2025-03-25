@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useActionState, useEffect } from 'react';
+import { useState, useActionState, useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { LogIn, CircleCheckBig } from 'lucide-react';
 import { loginUp } from '@/app/actions/auth';
@@ -24,9 +24,8 @@ enum UserRole {
 export default function UserAuthForm() {
   const [state, action, pending] = useActionState(loginUp, undefined);
   const [isRole, setRole] = useState(true);
-  const [countdown, setCountdown] = useState(10);
 
-  console.log(state);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -37,24 +36,14 @@ export default function UserAuthForm() {
   });
 
   const toggleRole = () => {
-    form.setValue('tenant', isRole ? UserRole.PLAYER : UserRole.AGENT);
-    setRole((prev) => !prev);
+    const newRole = isRole ? UserRole.AGENT : UserRole.PLAYER;
+    form.setValue('tenant', newRole);
+    setRole(!isRole);
   };
 
-  useEffect(() => {
-    if (state?.result?.status === 0) {
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            window.open('https://747ph.live', '_blank');
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-  }, [state]);
+  const handleRedirect = () => {
+    window.open('https://747ph.live', '_blank');
+  };
 
   return (
     <>
@@ -67,6 +56,7 @@ export default function UserAuthForm() {
               <FormItem>
                 <FormControl>
                   <Input
+                    required
                     className='mb-6'
                     type='text'
                     placeholder='Enter Username'
@@ -192,10 +182,10 @@ export default function UserAuthForm() {
                 received
               </p>
               <p className='block text-center font-bold text-green-700'>
-                Redirecting in: {countdown} seconds
+                Redirecting in: 10 seconds
               </p>
               <Button
-                onClick={() => window.open('https://747ph.live', '_blank')}
+                onClick={handleRedirect}
                 className='w-full bg-green-700 text-base font-semibold uppercase text-white'
               >
                 Continue to 747 LIVE
