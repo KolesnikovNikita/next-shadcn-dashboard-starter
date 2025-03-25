@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 export default function SignInViewPage() {
   return (
     <div id='login-page' className='bg-white lg:max-w-none'>
-      <div className='flex h-full flex-col items-center justify-center space-y-5'>
-        <div className=''>
+      <div className='flex h-full flex-col items-center justify-center space-y-5 shadow-md'>
+        <div>
           <Image
             className='ml-auto mr-auto rounded'
             src={Logo}

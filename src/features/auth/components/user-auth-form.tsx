@@ -10,9 +10,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useActionState } from 'react';
+import { useState, useActionState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { LogIn, X } from 'lucide-react';
+import { LogIn, CircleCheckBig } from 'lucide-react';
 import { loginUp } from '@/app/actions/auth';
 import { LoginFormSchema } from '@/schemas/auth';
 
@@ -24,7 +24,9 @@ enum UserRole {
 export default function UserAuthForm() {
   const [state, action, pending] = useActionState(loginUp, undefined);
   const [isRole, setRole] = useState(true);
-  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [countdown, setCountdown] = useState(10);
+
+  console.log(state);
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -39,10 +41,25 @@ export default function UserAuthForm() {
     setRole((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (state?.result?.status === 0) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            window.open('https://747ph.live', '_blank');
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  }, [state]);
+
   return (
     <>
       <Form {...form}>
-        <form action={action} className='w-full'>
+        <form action={action} className='relative w-full'>
           <FormField
             control={form.control}
             name='username'
@@ -57,10 +74,18 @@ export default function UserAuthForm() {
                   />
                 </FormControl>
                 {state?.errors?.username?.map((err, index) => (
-                  <p key={index} className='text-red-500'>
+                  <p
+                    key={index}
+                    className='absolute left-3 top-10 font-medium text-red-500'
+                  >
                     {err}
                   </p>
                 ))}
+                {state?.errors?.general?.[0] && (
+                  <p className='absolute left-3 top-10 font-medium text-red-500'>
+                    {JSON.parse(state.errors.general[0]).detail}
+                  </p>
+                )}
                 <div className='mb-6'>
                   <label className='relative flex h-12 w-full cursor-pointer items-center rounded-full border bg-white shadow-sm'>
                     <span
@@ -157,30 +182,28 @@ export default function UserAuthForm() {
             Login
           </Button>
         </form>
-      </Form>
 
-      {showLoginForm && (
-        <Card className='bg-green-300 py-3'>
-          <CardContent className='flex flex-col justify-between space-y-3 pb-2'>
-            <p className='block text-green-800'>
-              User with id f5hjwjhc7ewhbwehjcb authenticated link send
-              successfully
-            </p>
-            <p className='block text-green-800'>
-              Please <span className='font-bold underline'>login</span> to
-              player website and click on the provided link with authorization
-              code to continue. Back to{' '}
-              <span className='font-bold underline'>main</span> page
-            </p>
-            <p className='block text-center font-bold text-green-700'>
-              Redirecting in: 4 seconds
-            </p>
-            <Button className='w-full bg-green-700 text-base font-semibold uppercase text-white'>
-              <X className='mr-1 h-5 w-5' /> Reset
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+        {state?.result?.status === 0 && (
+          <Card className='bg-green-300 py-3 transition-all duration-700 animate-in fade-in slide-in-from-bottom-4'>
+            <CardContent className='flex flex-col justify-between space-y-3 pb-2'>
+              <p className='flex items-start text-green-800'>
+                <CircleCheckBig className='mr-2 min-h-[20px] min-w-[20px]' />
+                Open the messages on your 747 Live and click on the link you
+                received
+              </p>
+              <p className='block text-center font-bold text-green-700'>
+                Redirecting in: {countdown} seconds
+              </p>
+              <Button
+                onClick={() => window.open('https://747ph.live', '_blank')}
+                className='w-full bg-green-700 text-base font-semibold uppercase text-white'
+              >
+                Continue to 747 LIVE
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </Form>
     </>
   );
 }

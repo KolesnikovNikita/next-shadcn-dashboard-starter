@@ -13,9 +13,12 @@ export type FormState =
       errors?: {
         username?: string[];
         tenant?: string[];
-        general?: string;
+        general?: string[];
+      };
+      result?: {
+        status: number;
+        message: string;
       };
       message?: string;
-      result?: string;
     }
   | undefined;

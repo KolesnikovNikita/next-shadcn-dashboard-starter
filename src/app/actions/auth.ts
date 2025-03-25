@@ -5,12 +5,16 @@ export async function loginUp(
   _: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const data = Object.fromEntries(formData.entries());
+  const username = formData.get('username') as string;
+  const tenant = Number(formData.get('tenant'));
 
-  const validatedFields = LoginFormSchema.safeParse({
-    username: data.username,
-    tenant: Number(data.tenant)
-  });
+  if (!username || isNaN(tenant)) {
+    return {
+      errors: { general: ['Invalid username or tenant'] }
+    };
+  }
+
+  const validatedFields = LoginFormSchema.safeParse({ username, tenant });
 
   if (!validatedFields.success) {
     return {
@@ -20,7 +24,7 @@ export async function loginUp(
 
   try {
     const response = await fetch(
-      `https://mngapi.azurewebsites.net/api/Account/login-link?username=${encodeURIComponent(data.username)}&tenant=${data.tenant}`,
+      `https://mngapi.azurewebsites.net/api/Account/login-link?username=${encodeURIComponent(username)}&tenant=${tenant}`,
       {
         method: 'POST',
         headers: {
@@ -31,17 +35,15 @@ export async function loginUp(
 
     if (!response.ok) {
       const errorMessage = await response.text();
-      return { errors: { general: errorMessage } };
+      return { errors: { general: [errorMessage] } };
     }
 
-    const result = await response.text();
-    console.log('result:', result);
-    return { message: 'Success', result };
+    const result = await response.json();
+
+    return { message: result.message, result };
   } catch (error) {
-    return {
-      errors: {
-        general: error instanceof Error ? error.message : 'Unknown error'
-      }
-    };
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    return { errors: { general: [errorMessage] } };
   }
 }
