@@ -27,7 +27,7 @@ export default function SignInViewPage() {
         <div className='flex items-center'>
           <div className='mx-auto flex w-[350px] flex-col justify-center rounded-lg bg-white px-6 py-5 md:w-[400px] lg:shadow-lg'>
             <div className='flex flex-col space-y-2 text-center'>
-              <h1 className='mb-6 font-roboto text-2xl font-semibold tracking-tight'>
+              <h1 className='mb-6 font-roboto text-2xl font-semibold tracking-tight text-black'>
                 Register and connect to Mng
               </h1>
             </div>
