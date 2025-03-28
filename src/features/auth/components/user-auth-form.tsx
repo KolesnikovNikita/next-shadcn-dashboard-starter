@@ -1,22 +1,11 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useActionState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { LogIn, CircleCheckBig } from 'lucide-react';
 import { loginUp } from '@/app/actions/auth';
 import { LoginFormSchema } from '@/schemas/auth';
-import { RoleToggle } from '@/features/auth/components/RoleToggle';
 import { SuccessCard } from '@/features/auth/components/SuccessCard';
+import { LoginForm } from '@/features/auth/components/LoginForm';
 import { UserRole } from '../types';
 
 export default function UserAuthForm() {
@@ -53,7 +42,7 @@ export default function UserAuthForm() {
 
   useEffect(() => {
     if (state?.result?.status === 0) {
-      setCountdown(3);
+      setCountdown(7);
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
@@ -81,57 +70,18 @@ export default function UserAuthForm() {
 
   return (
     <>
-      <Form {...form}>
-        <form action={action} className='relative w-full'>
-          <FormField
-            control={form.control}
-            name='username'
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    required
-                    className='mb-6 text-black'
-                    type='text'
-                    placeholder='Enter Username'
-                    {...field}
-                  />
-                </FormControl>
-                {state?.errors?.username?.map((err, index) => (
-                  <p
-                    key={index}
-                    className='absolute left-3 top-10 font-medium text-red-500'
-                  >
-                    {err}
-                  </p>
-                ))}
-                {state?.errors?.general?.[0] && (
-                  <p className='absolute left-3 top-10 font-medium text-red-500'>
-                    {JSON.parse(state.errors.general[0]).detail}
-                  </p>
-                )}
-                <RoleToggle isRole={isRole} onToggle={toggleRole} form={form} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <LoginForm
+        form={form}
+        isRole={isRole}
+        onToggle={toggleRole}
+        onSubmit={action}
+        pending={pending}
+        state={state}
+      />
 
-          <Button
-            className='mb-6 ml-auto mt-6 h-12 w-full cursor-pointer bg-green-500 text-base font-semibold uppercase text-white'
-            type='submit'
-            disabled={pending}
-          >
-            <span className='pr-2'>
-              <LogIn />
-            </span>
-            Login
-          </Button>
-        </form>
-
-        {state?.result?.status === 0 && (
-          <SuccessCard countdown={countdown} onRedirect={handleRedirect} />
-        )}
-      </Form>
+      {state?.result?.status === 0 && (
+        <SuccessCard countdown={countdown} onRedirect={handleRedirect} />
+      )}
     </>
   );
 }
