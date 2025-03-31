@@ -1,15 +1,25 @@
 'use server';
 import { LoginFormSchema, FormState } from '@/schemas/auth';
 
+interface AuthResult {
+  status: number;
+  message: string;
+  token?: string;
+}
+
 export async function loginUp(
   _: FormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<{ result: AuthResult; errors?: any }> {
   const username = formData.get('username') as string;
   const tenant = Number(formData.get('tenant'));
 
   if (!username || isNaN(tenant)) {
     return {
+      result: {
+        status: 400,
+        message: 'Invalid username or tenant'
+      },
       errors: { general: ['Invalid username or tenant'] }
     };
   }
@@ -18,6 +28,10 @@ export async function loginUp(
 
   if (!validatedFields.success) {
     return {
+      result: {
+        status: 400,
+        message: 'Invalid form data'
+      },
       errors: validatedFields.error.flatten().fieldErrors
     };
   }
@@ -35,15 +49,34 @@ export async function loginUp(
 
     if (!response.ok) {
       const errorMessage = await response.text();
-      return { errors: { general: [errorMessage] } };
+      return {
+        result: {
+          status: response.status,
+          message: errorMessage
+        },
+        errors: { general: [errorMessage] }
+      };
     }
 
     const result = await response.json();
 
-    return { message: result.message, result };
+    return {
+      result: {
+        status: response.status,
+        message: result.message,
+        token: result.token
+      },
+      errors: undefined
+    };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
-    return { errors: { general: [errorMessage] } };
+    return {
+      result: {
+        status: 500,
+        message: errorMessage
+      },
+      errors: { general: [errorMessage] }
+    };
   }
 }

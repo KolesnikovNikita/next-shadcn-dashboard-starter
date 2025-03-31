@@ -7,14 +7,17 @@ import { LoginFormSchema } from '@/schemas/auth';
 import { SuccessCard } from '@/features/auth/components/SuccessCard';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { UserRole } from '../types';
+import { useRoleToggle } from '../hooks/useRoleToggle';
+import { saveToken } from '@/lib/auth';
 
 export default function UserAuthForm() {
   const [state, action, pending] = useActionState(loginUp, undefined);
-  const [isRole, setRole] = useState(true);
   const [countdown, setCountdown] = useState(5);
   const [hasRedirected, setHasRedirected] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const redirectRef = useRef(false);
+
+  console.log('state', state);
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -24,11 +27,7 @@ export default function UserAuthForm() {
     }
   });
 
-  const toggleRole = () => {
-    const newRole = isRole ? UserRole.AGENT : UserRole.PLAYER;
-    form.setValue('tenant', newRole);
-    setRole(!isRole);
-  };
+  const { isRole, toggleRole } = useRoleToggle({ form });
 
   const handleRedirect = () => {
     if (redirectRef.current) return;
@@ -41,7 +40,11 @@ export default function UserAuthForm() {
   };
 
   useEffect(() => {
-    if (state?.result?.status === 0) {
+    if (state?.result?.status === 200) {
+      // Save token when login is successful
+      if (state.result.token) {
+        saveToken(state.result.token);
+      }
       setCountdown(7);
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -79,7 +82,7 @@ export default function UserAuthForm() {
         state={state}
       />
 
-      {state?.result?.status === 0 && (
+      {state?.result?.status === 200 && (
         <SuccessCard countdown={countdown} onRedirect={handleRedirect} />
       )}
     </>

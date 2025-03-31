@@ -8,7 +8,11 @@ import {
 } from '@/components/ui/input-otp';
 import { Button } from '@/components/ui/button';
 
-export default function OtpVerification() {
+interface OtpInputProps {
+  onVerify: (code: string) => Promise<void>;
+}
+
+export default function OtpInput({ onVerify }: OtpInputProps) {
   const [isCodeSent, setIsCodeSent] = useState(true);
   const [otpCode, setOtpCode] = useState('');
 
