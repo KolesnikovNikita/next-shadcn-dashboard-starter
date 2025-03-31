@@ -131,7 +131,7 @@ export default function PhoneVerification() {
         </Form>
       </div>
 
-      {isCodeSent && <OtpInput />}
+      {isCodeSent && <OtpInput onVerify={verifyCode} />}
     </>
   );
 }
