@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
+import { UserDetails } from '@/features/auth/types';
 
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);
 
@@ -11,10 +12,13 @@ export const saveToken = (token: string) => {
 
 export const getToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem(TOKEN_KEY);
+    const token = localStorage.getItem(TOKEN_KEY);
+    return token;
   }
   return null;
 };
+
+console.log('getToken', getToken());
 
 export const removeToken = () => {
   localStorage.removeItem(TOKEN_KEY);
@@ -22,4 +26,27 @@ export const removeToken = () => {
 
 export const isAuthenticated = () => {
   return !!getToken();
+};
+
+export const getUserDetails = async (): Promise<UserDetails> => {
+  const accessToken = getToken();
+  if (!accessToken) {
+    throw new Error('No access token found');
+  }
+
+  const response = await fetch(
+    'https://mngapi.azurewebsites.net/api/Account/user-details',
+    {
+      headers: {
+        accept: 'text/plain',
+        Authorization: `Bearer ${accessToken}`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user details');
+  }
+
+  return response.json();
 };
