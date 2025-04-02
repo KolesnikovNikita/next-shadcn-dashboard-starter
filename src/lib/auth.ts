@@ -18,8 +18,6 @@ export const getToken = () => {
   return null;
 };
 
-console.log('getToken', getToken());
-
 export const removeToken = () => {
   localStorage.removeItem(TOKEN_KEY);
 };

@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { saveToken, getUserDetails } from '@/lib/auth';
+import { useUserStore } from '@/store/user';
+import { UserDetails } from '@/features/auth/types';
 
 interface TokenResponse {
   accessToken: string;
@@ -13,6 +15,7 @@ export default function LinkUpVerify() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const setUserDetails = useUserStore((state) => state.setUserDetails);
 
   useEffect(() => {
     const sendTokenToApi = async (token: string) => {
@@ -43,8 +46,19 @@ export default function LinkUpVerify() {
 
         if (savedToken === accessToken) {
           try {
-            const userDetails = await getUserDetails();
-            console.log('User details:', userDetails);
+            const userDetails: UserDetails = await getUserDetails();
+            console.log('Fetched user details:', userDetails);
+
+            setUserDetails(userDetails);
+            console.log('Saved user details to store');
+
+            // Проверяем, что данные сохранились
+            const storedDetails = localStorage.getItem('user_details');
+            console.log(
+              'Verified stored details:',
+              storedDetails ? JSON.parse(storedDetails) : null
+            );
+
             router.replace('/verification/email');
           } catch (error) {
             console.error('Error fetching user details:', error);
@@ -64,7 +78,7 @@ export default function LinkUpVerify() {
     } else {
       router.replace('/');
     }
-  }, [token, router]);
+  }, [token, router, setUserDetails]);
 
   return (
     <div className='flex min-h-screen items-center justify-center'>

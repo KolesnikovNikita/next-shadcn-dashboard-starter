@@ -20,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { useUserStore } from '@/store/user';
+import { UserDetails } from '@/features/auth/types';
 
 type FormValues = {
   tel: string;
@@ -30,7 +32,11 @@ export default function PhoneVerification() {
   const [userCountry, setUserCountry] = useState<string | undefined>('US');
   const [isCodeSent, setIsCodeSent] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const userDetails: UserDetails | null = useUserStore(
+    (state) => state.userDetails
+  );
 
+  console.log('userDetails', userDetails);
   // Fetch User country code
 
   useEffect(() => {
