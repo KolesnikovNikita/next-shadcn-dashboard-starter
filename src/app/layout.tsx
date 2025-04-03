@@ -42,6 +42,7 @@ export default async function RootLayout({
         <NuqsAdapter>
           <Providers session={session}>
             <Toaster />
+
             {children}
           </Providers>
         </NuqsAdapter>

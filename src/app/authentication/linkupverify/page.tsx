@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { saveToken, getUserDetails } from '@/lib/auth';
 import { useUserStore } from '@/store/user';
 import { UserDetails } from '@/features/auth/types';
+import { getNextVerificationStep } from '@/lib/verification';
 
 interface TokenResponse {
   accessToken: string;
@@ -52,14 +53,13 @@ export default function LinkUpVerify() {
             setUserDetails(userDetails);
             console.log('Saved user details to store');
 
-            // Проверяем, что данные сохранились
-            const storedDetails = localStorage.getItem('user_details');
-            console.log(
-              'Verified stored details:',
-              storedDetails ? JSON.parse(storedDetails) : null
-            );
+            // Определяем следующий шаг верификации
+            const nextStep = getNextVerificationStep(userDetails);
+            console.log('Next verification step:', nextStep);
+            console.log('userDetails', userDetails);
 
-            router.replace('/verification/email');
+            // Редиректим на соответствующий шаг
+            router.replace(`/verification/${nextStep}`);
           } catch (error) {
             console.error('Error fetching user details:', error);
             throw error;
