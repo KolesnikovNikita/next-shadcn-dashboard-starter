@@ -48,14 +48,12 @@ export default function LinkUpVerify() {
         if (savedToken === accessToken) {
           try {
             const userDetails: UserDetails = await getUserDetails();
-            console.log('Fetched user details:', userDetails);
 
             setUserDetails(userDetails);
-            console.log('Saved user details to store');
 
             // Определяем следующий шаг верификации
             const nextStep = getNextVerificationStep(userDetails);
-            console.log('Next verification step:', nextStep);
+
             console.log('userDetails', userDetails);
 
             // Редиректим на соответствующий шаг

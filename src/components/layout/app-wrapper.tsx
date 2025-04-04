@@ -16,6 +16,9 @@ import {
 import { Menu, LogOut, User, Settings, HelpCircle } from 'lucide-react';
 import logo from '@/assets/img/logo-2.png';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { decodeBase64 } from '@/lib/base64Decoder';
+import { Separator } from '@/components/ui/separator';
+
 interface AppWrapperProps {
   children: React.ReactNode;
 }
@@ -23,12 +26,26 @@ interface AppWrapperProps {
 export function AppWrapper({ children }: AppWrapperProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (userDetails?.profileImage) {
+      try {
+        // Create a data URL directly from the base64 string
+        const dataUrl = `data:image/jpeg;base64,${userDetails.profileImage}`;
+        setProfileImageUrl(dataUrl);
+      } catch (error) {
+        console.error('Error processing profile image:', error);
+        setProfileImageUrl(null);
+      }
+    }
+  }, [userDetails?.profileImage]);
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: '/' });
@@ -72,22 +89,12 @@ export function AppWrapper({ children }: AppWrapperProps) {
             </Avatar>
           </div>
 
+          <div className='ml-auto mr-auto flex items-center gap-2'>
+            <span className=''>{userDetails?.userName || 'User'}</span>
+          </div>
+
           {/* Right: User info and logout */}
           <div className='ml-auto flex items-center gap-4'>
-            <div className='flex items-center gap-2'>
-              <Avatar className='h-8 w-8'>
-                <AvatarImage
-                  src={userDetails?.profileImage}
-                  alt={userDetails?.userName || 'User'}
-                />
-                <AvatarFallback>
-                  {getInitials(userDetails?.userName)}
-                </AvatarFallback>
-              </Avatar>
-              <span className='hidden md:block'>
-                {userDetails?.userName || 'User'}
-              </span>
-            </div>
             <Button variant='ghost' size='icon' onClick={handleLogout}>
               <LogOut className='h-5 w-5' />
             </Button>
@@ -106,25 +113,23 @@ export function AppWrapper({ children }: AppWrapperProps) {
           </SheetHeader>
           <div className='flex flex-col gap-4'>
             {/* User profile */}
-            <div className='flex items-center gap-4 p-4'>
-              <Avatar className='h-12 w-12'>
+            <div className='p-x flex items-center justify-center gap-4 pt-4'>
+              <Avatar className='h-[125px] w-[125px] border-4 border-red-500'>
                 <AvatarImage
-                  src={userDetails?.profileImage}
+                  src={profileImageUrl || ''}
                   alt={userDetails?.userName || 'User'}
+                  className='object-cover'
                 />
                 <AvatarFallback>
                   {getInitials(userDetails?.userName)}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <p className='font-semibold'>
-                  {userDetails?.userName || 'User'}
-                </p>
-                <p className='text-sm text-muted-foreground'>
-                  {userDetails?.email || 'No email provided'}
-                </p>
-              </div>
             </div>
+            <p className='text-center font-semibold'>
+              {userDetails?.userName || 'User'}
+            </p>
+            <Separator />
+            <div></div>
 
             {/* Navigation */}
             <nav className='flex flex-col gap-2'>
