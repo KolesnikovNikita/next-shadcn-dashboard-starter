@@ -16,7 +16,6 @@ import {
 import { Menu, LogOut, User, Settings, HelpCircle } from 'lucide-react';
 import logo from '@/assets/img/logo-2.png';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { decodeBase64 } from '@/lib/base64Decoder';
 import { Separator } from '@/components/ui/separator';
 
 interface AppWrapperProps {
