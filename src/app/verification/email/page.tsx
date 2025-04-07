@@ -11,50 +11,55 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import OtpInput from '@/features/otp/OtpInput';
-import { useVerificationStore } from '@/features/verification/store/verificationStore';
+import { verifyEmail } from './actions';
 import { useRouter } from 'next/navigation';
-
 type FormValues = {
   email: string;
 };
 
 export default function EmailVerification() {
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { email, setEmail, setCurrentStep } = useVerificationStore();
+  const verifyCode = async (code: string) => {
+    console.log('Code to verify:', code);
+  };
 
   const form = useForm<FormValues>({
-    defaultValues: { email }
+    defaultValues: { email: '' }
   });
 
-  // Code send on email function
-  const sendCodeToEmail = async (email: string) => {
-    // logic send code
-    console.log('Code sent to:', email);
-    setIsCodeSent(true); // show field for enter the code
-  };
+  const onSubmit = async (data: { email: string }) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const formData = new FormData();
+      formData.append('email', data.email);
 
-  // Code checking function
-  const verifyCode = async (code: string) => {
-    // Logic for code checking
-    console.log('Code to verify:', code);
-    setCurrentStep('phone');
-    // router.push('/verification/phone');
-  };
+      const result = await verifyEmail(formData);
 
-  // Handler email
-  const onSubmitEmail = async (data: FormValues) => {
-    setEmail(data.email);
-    await sendCodeToEmail(data.email);
+      if (result.success) {
+        setIsCodeSent(true);
+        router.push('/verification/phone');
+      } else {
+        setError(result.message || 'An error occurred');
+      }
+    } catch (error) {
+      setError('An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
       <div className='mb-8'>
         <h2 className='mb-4'>Verify Email</h2>
+        {error && <div className='mb-4 text-red-500'>{error}</div>}
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmitEmail)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className='w-full space-y-2'
           >
             <FormField
@@ -70,18 +75,29 @@ export default function EmailVerification() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} type='email' placeholder='Verify email' />
+                    <Input
+                      {...form.register('email')}
+                      type='email'
+                      placeholder='Verify email'
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className='uppercase' type='submit'>
-              Send verification code
+            <Button className='uppercase' disabled={isLoading} type='submit'>
+              {isLoading ? 'Sending...' : 'Send verification code'}
             </Button>
           </form>
         </Form>
       </div>
+
+      {isCodeSent && (
+        <div className='mt-4 text-green-600'>
+          Verification code has been sent to your email!
+        </div>
+      )}
 
       {isCodeSent && <OtpInput onVerify={verifyCode} />}
     </>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/store/user';
 import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,6 @@ export function AppWrapper({ children }: AppWrapperProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
-  const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
 
   useEffect(() => {
