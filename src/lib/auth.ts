@@ -1,25 +1,27 @@
+import { UserDetails } from '@/features/auth/types';
 import NextAuth from 'next-auth';
 import authConfig from './auth.config';
-import { UserDetails } from '@/features/auth/types';
+import Cookies from 'js-cookie';
 
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);
 
 const TOKEN_KEY = 'auth_token';
 
 export const saveToken = (token: string) => {
-  localStorage.setItem(TOKEN_KEY, token);
+  Cookies.set(TOKEN_KEY, token, {
+    expires: 30,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/'
+  });
 };
 
 export const getToken = () => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem(TOKEN_KEY);
-    return token;
-  }
-  return null;
+  const token = Cookies.get(TOKEN_KEY);
+  return token;
 };
 
 export const removeToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
+  Cookies.remove(TOKEN_KEY);
 };
 
 export const isAuthenticated = () => {
@@ -27,7 +29,7 @@ export const isAuthenticated = () => {
 };
 
 export const getUserDetails = async (): Promise<UserDetails> => {
-  const accessToken = getToken();
+  const accessToken = await getToken();
   if (!accessToken) {
     throw new Error('No access token found');
   }

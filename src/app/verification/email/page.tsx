@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import OtpInput from '@/features/otp/OtpInput';
 import { verifyEmail } from './actions';
 import { useRouter } from 'next/navigation';
+import { getToken } from '@/lib/auth';
+
 type FormValues = {
   email: string;
 };
@@ -36,12 +38,18 @@ export default function EmailVerification() {
       setError(null);
       const formData = new FormData();
       formData.append('email', data.email);
+      const token = getToken();
 
-      const result = await verifyEmail(formData);
+      if (!token) {
+        setError('Authentication required. Please log in');
+        setIsLoading(false);
+        return;
+      }
+
+      const result = await verifyEmail(formData, token);
 
       if (result.success) {
         setIsCodeSent(true);
-        router.push('/verification/phone');
       } else {
         setError(result.message || 'An error occurred');
       }

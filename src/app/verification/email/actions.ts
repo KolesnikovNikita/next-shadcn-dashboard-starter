@@ -6,35 +6,36 @@ const emailSchema = z.object({
   email: z.string().email()
 });
 
-export async function verifyEmail(formData: FormData) {
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const emailVerification = process.env.NEXT_PUBLIC_API_EMAIL_VERIFICATION;
+
+export async function verifyEmail(formData: FormData, token: string) {
   try {
     const email = formData.get('email') as string;
-    console.log('Received email:', email);
+
     const { email: validateEmail } = emailSchema.parse({ email });
 
+    console.log('token', token);
+
     const response = await fetch(
-      `https://mngapi.azurewebsites.net/api/Verification/start-email-verification?email=${validateEmail}`,
+      `${baseUrl}${emailVerification}?email=${validateEmail}`,
       {
         method: 'POST',
         headers: {
-          Accept: 'text/plain'
+          Accept: 'text/plain',
+          Authorization: token ? `Bearer ${token}` : ''
         }
       }
     );
 
-    console.log('Response status:', response.status);
-    console.log(
-      'Response headers:',
-      Object.fromEntries(response.headers.entries())
-    );
-
     if (!response.ok) {
       const errorMessage = await response.text();
-      console.log('errorMessage', errorMessage);
+
       return { success: false, message: errorMessage };
     }
 
     const result = await response.json();
+
     console.log('result', result);
 
     return { success: true, message: 'Verification successfully', result };

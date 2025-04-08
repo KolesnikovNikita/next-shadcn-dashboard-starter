@@ -7,6 +7,9 @@ interface AuthResult {
   token?: string;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const loginLink = process.env.NEXT_PUBLIC_API_LOGIN_LINK;
+
 export async function loginUp(
   _: FormState,
   formData: FormData
@@ -38,7 +41,7 @@ export async function loginUp(
 
   try {
     const response = await fetch(
-      `https://mngapi.azurewebsites.net/api/Account/login-link?username=${encodeURIComponent(username)}&tenant=${tenant}`,
+      `${baseUrl}${loginLink}?username=${encodeURIComponent(username)}&tenant=${tenant}`,
       {
         method: 'POST',
         headers: {

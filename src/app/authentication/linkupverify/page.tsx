@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { saveToken, getUserDetails } from '@/lib/auth';
+import { saveToken, getUserDetails, getToken } from '@/lib/auth';
 import { useUserStore } from '@/store/user';
 import { UserDetails } from '@/features/auth/types';
 import { getNextVerificationStep } from '@/lib/verification';
@@ -12,25 +12,26 @@ interface TokenResponse {
   refreshToken: string;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const loginLink = process.env.NEXT_PUBLIC_API_LOGIN;
+
 export default function LinkUpVerify() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+
   const setUserDetails = useUserStore((state) => state.setUserDetails);
 
   useEffect(() => {
     const sendTokenToApi = async (token: string) => {
       try {
-        const response = await fetch(
-          `https://mngapi.azurewebsites.net/api/Account/login-access-token?token=${token}`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'text/plain'
-            },
-            body: JSON.stringify({ token })
-          }
-        );
+        const response = await fetch(`${baseUrl}${loginLink}?token=${token}`, {
+          method: 'POST',
+          headers: {
+            Accept: 'text/plain'
+          },
+          body: JSON.stringify({ token })
+        });
 
         const data: TokenResponse = await response.json();
         const { accessToken } = data;
@@ -43,7 +44,9 @@ export default function LinkUpVerify() {
 
         saveToken(accessToken);
 
-        const savedToken = localStorage.getItem('auth_token');
+        const savedToken = getToken();
+        console.log('savedToken', savedToken);
+        console.log('tokens matched', savedToken === accessToken);
 
         if (savedToken === accessToken) {
           try {
@@ -51,12 +54,10 @@ export default function LinkUpVerify() {
 
             setUserDetails(userDetails);
 
-            // Определяем следующий шаг верификации
+            // Determine the next verification step
             const nextStep = getNextVerificationStep(userDetails);
 
-            console.log('userDetails', userDetails);
-
-            // Редиректим на соответствующий шаг
+            // Redirect to the corresponding step
             router.replace(`/verification/${nextStep}`);
           } catch (error) {
             console.error('Error fetching user details:', error);
