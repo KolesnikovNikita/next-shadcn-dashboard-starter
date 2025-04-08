@@ -9,7 +9,7 @@ const emailSchema = z.object({
 export async function verifyEmail(formData: FormData) {
   try {
     const email = formData.get('email') as string;
-    console.log('Received email:', email); // Логируем полученный email
+    console.log('Received email:', email);
     const { email: validateEmail } = emailSchema.parse({ email });
 
     const response = await fetch(
@@ -22,11 +22,11 @@ export async function verifyEmail(formData: FormData) {
       }
     );
 
-    console.log('Response status:', response.status); // Логируем статус ответа
+    console.log('Response status:', response.status);
     console.log(
       'Response headers:',
       Object.fromEntries(response.headers.entries())
-    ); // Логируем заголовки
+    );
 
     if (!response.ok) {
       const errorMessage = await response.text();
