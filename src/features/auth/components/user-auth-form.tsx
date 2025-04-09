@@ -17,8 +17,6 @@ export default function UserAuthForm() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const redirectRef = useRef(false);
 
-  console.log('state', state);
-
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {

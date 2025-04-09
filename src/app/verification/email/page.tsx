@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import OtpInput from '@/features/otp/OtpInput';
-import { verifyEmail } from './actions';
+import { verifyEmail, checkEmailVerification } from './actions';
 import { useRouter } from 'next/navigation';
 import { getToken } from '@/lib/auth';
 
@@ -24,13 +24,31 @@ export default function EmailVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const verifyCode = async (code: string) => {
-    console.log('Code to verify:', code);
-  };
 
   const form = useForm<FormValues>({
     defaultValues: { email: '' }
   });
+
+  const verifyCode = async (code: string) => {
+    try {
+      const token = await getToken();
+      if (!token) {
+        setError('Authentication required. Please log in');
+        return;
+      }
+      const result = await checkEmailVerification(code, email, token);
+      console.log('result verifyCode', result);
+      if (result.success) {
+        router.push('/verification/phone');
+      } else {
+        setError(result.message || 'Verification failed. Please try again');
+      }
+    } catch (error) {
+      setError('Verification failed. Please try again');
+    }
+  };
+
+  const email = form.getValues('email');
 
   const onSubmit = async (data: { email: string }) => {
     try {

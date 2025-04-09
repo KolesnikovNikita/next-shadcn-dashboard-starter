@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);
 
 const TOKEN_KEY = 'auth_token';
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const userDetails = process.env.NEXT_PUBLIC_API_USER_DETAILS;
 
 export const saveToken = (token: string) => {
   Cookies.set(TOKEN_KEY, token, {
@@ -34,15 +36,15 @@ export const getUserDetails = async (): Promise<UserDetails> => {
     throw new Error('No access token found');
   }
 
-  const response = await fetch(
-    'https://mngapi.azurewebsites.net/api/Account/user-details',
-    {
-      headers: {
-        accept: 'text/plain',
-        Authorization: `Bearer ${accessToken}`
-      }
+  const url = `${baseUrl}${userDetails}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      accept: 'text/plain',
+      Authorization: `Bearer ${accessToken}`
     }
-  );
+  });
 
   if (!response.ok) {
     throw new Error('Failed to fetch user details');
