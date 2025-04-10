@@ -61,9 +61,14 @@ export async function checkEmailVerification(
         Authorization: `Bearer ${token}`
       }
     });
+
     const request = await response.json();
 
-    console.log('Email verification response:', request);
+    if (!response.ok) {
+      const errorMessage = await response.text();
+
+      return { success: false, message: errorMessage };
+    }
 
     return request;
   } catch (error) {

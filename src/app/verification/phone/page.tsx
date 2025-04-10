@@ -22,6 +22,8 @@ import {
 } from '@/components/ui/select';
 import { useUserStore } from '@/store/user';
 import { UserDetails } from '@/features/auth/types';
+import { useRouter } from 'next/navigation';
+import { getNextVerificationStep } from '@/lib/verification';
 
 type FormValues = {
   tel: string;
@@ -32,6 +34,16 @@ export default function PhoneVerification() {
   const [userCountry, setUserCountry] = useState<string | undefined>('US');
   const [isCodeSent, setIsCodeSent] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const router = useRouter();
+  const userDetails = useUserStore((state) => state.userDetails);
+
+  // Проверяем, подтверждена ли уже электронная почта
+  useEffect(() => {
+    if (!userDetails?.isEmailConfirmed) {
+      // Если email еще не подтвержден, перенаправляем на страницу верификации email
+      router.replace('/verification/email');
+    }
+  }, [userDetails, router]);
 
   // Fetch User country code
 

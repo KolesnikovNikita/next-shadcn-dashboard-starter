@@ -53,7 +53,6 @@ export default function LinkUpVerify() {
             const userDetails: UserDetails = await getUserDetails();
 
             setUserDetails(userDetails);
-            console.log('userDetails', userDetails);
             // Determine the next verification step
             const nextStep = getNextVerificationStep(userDetails);
 
@@ -82,6 +81,9 @@ export default function LinkUpVerify() {
   return (
     <div className='flex min-h-screen items-center justify-center'>
       <div className='text-center'>
+        <div className='mb-8'>
+          <div className='mx-auto h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-500'></div>
+        </div>
         <h1 className='mb-4 text-2xl font-bold'>Redirecting...</h1>
         <p>Please wait while we redirect you to the verification process.</p>
       </div>

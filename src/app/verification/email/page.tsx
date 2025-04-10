@@ -1,6 +1,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Form,
   FormField,
@@ -14,6 +14,8 @@ import OtpInput from '@/features/otp/OtpInput';
 import { verifyEmail, checkEmailVerification } from './actions';
 import { useRouter } from 'next/navigation';
 import { getToken } from '@/lib/auth';
+import { useUserStore } from '@/store/user';
+import { getNextVerificationStep } from '@/lib/verification';
 
 type FormValues = {
   email: string;
@@ -24,6 +26,16 @@ export default function EmailVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const userDetails = useUserStore((state) => state.userDetails);
+
+  // Check if email is already verified
+  useEffect(() => {
+    if (userDetails?.isEmailConfirmed) {
+      // If email is already verified, redirect to next step
+      const nextStep = getNextVerificationStep(userDetails);
+      router.replace(`/verification/${nextStep}`);
+    }
+  }, [userDetails, router]);
 
   const form = useForm<FormValues>({
     defaultValues: { email: '' }
@@ -37,7 +49,7 @@ export default function EmailVerification() {
         return;
       }
       const result = await checkEmailVerification(code, email, token);
-      console.log('result verifyCode', result);
+
       if (result.success) {
         router.push('/verification/phone');
       } else {
