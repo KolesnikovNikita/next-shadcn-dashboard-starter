@@ -21,9 +21,10 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { useUserStore } from '@/store/user';
-import { UserDetails } from '@/features/auth/types';
 import { useRouter } from 'next/navigation';
-import { getNextVerificationStep } from '@/lib/verification';
+import { startTelVerification } from './actions';
+import { getToken } from '@/lib/auth';
+import { checkTelVerification } from './actions';
 
 type FormValues = {
   tel: string;
@@ -32,16 +33,17 @@ type FormValues = {
 export default function PhoneVerification() {
   const phoneNumber = parsePhoneNumberFromString('+1234567890');
   const [userCountry, setUserCountry] = useState<string | undefined>('US');
-  const [isCodeSent, setIsCodeSent] = useState(true);
+  const [isCodeSent, setIsCodeSent] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
 
-  // Проверяем, подтверждена ли уже электронная почта
+  console.log('userDetails', userDetails);
+
   useEffect(() => {
-    if (!userDetails?.isEmailConfirmed) {
-      // Если email еще не подтвержден, перенаправляем на страницу верификации email
-      router.replace('/verification/email');
+    if (userDetails?.isPhoneConfirmed) {
+      router.replace('/verification/documents');
     }
   }, [userDetails, router]);
 
@@ -67,12 +69,6 @@ export default function PhoneVerification() {
     fetchUserCountry();
   }, []);
 
-  // Checking the code
-  const verifyCode = async (code: string) => {
-    console.log('Code to verify:', code);
-    alert('Code verified successfully!');
-  };
-
   if (phoneNumber?.isValid()) {
     console.log('Valid phone number');
   }
@@ -81,12 +77,47 @@ export default function PhoneVerification() {
     defaultValues: { tel: '' }
   });
 
-  const onSubmit = (data: FormValues) => {
+  // Checking the code
+
+  const verifyCode = async (code: string) => {
+    const tel = form.getValues('tel');
+
+    try {
+      const token = await getToken();
+      if (!token) {
+        setError('Authentication required. Please log in');
+        return;
+      }
+
+      const result = await checkTelVerification(code, tel, token);
+
+      if (result.success) {
+        router.push('/verification/documents');
+      } else {
+        setError(result.message || 'Verification failed. Please try again');
+      }
+    } catch (error) {
+      setError('Verification failed. Please try again');
+    }
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    const token = (await getToken()) ?? '';
     if (!selectedMethod) {
       alert('Please select a verification method');
       return;
     }
+    const formData = new FormData();
+    formData.append('tel', data.tel);
+    formData.append('method', selectedMethod);
+
+    const response = await startTelVerification(formData, token);
+
+    if (response.success) {
+      setIsCodeSent(true);
+    }
   };
+
   return (
     <>
       <div className='mb-8'>
@@ -129,9 +160,10 @@ export default function PhoneVerification() {
                     <SelectValue placeholder='Pick a verification option' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='light'>Send SMS</SelectItem>
-                    <SelectItem value='dark'>Call me and dictate</SelectItem>
-                    <SelectItem value='system'>Use whatsapp</SelectItem>
+                    <SelectItem value='sms'>Send SMS</SelectItem>
+                    <SelectItem value='whatsapp'>Use whatsapp</SelectItem>
+                    <SelectItem value='telegram'>Telegram</SelectItem>
+                    <SelectItem value='call'>Call me and dictate</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

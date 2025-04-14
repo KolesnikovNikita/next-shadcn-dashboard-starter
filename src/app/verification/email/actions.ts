@@ -1,6 +1,7 @@
 'use server';
 
 import { z } from 'zod';
+import { updateUserDetails } from '@/lib/auth/updateUserDetails';
 
 const emailSchema = z.object({
   email: z.string().email()
@@ -69,6 +70,8 @@ export async function checkEmailVerification(
 
       return { success: false, message: errorMessage };
     }
+
+    await updateUserDetails();
 
     return request;
   } catch (error) {

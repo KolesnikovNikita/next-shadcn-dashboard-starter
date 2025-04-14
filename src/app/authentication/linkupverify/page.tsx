@@ -52,7 +52,10 @@ export default function LinkUpVerify() {
           try {
             const userDetails: UserDetails = await getUserDetails();
 
+            console.log('User Details:', userDetails);
+
             setUserDetails(userDetails);
+
             // Determine the next verification step
             const nextStep = getNextVerificationStep(userDetails);
 
