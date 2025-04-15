@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation';
 import { startTelVerification } from './actions';
 import { getToken } from '@/lib/auth';
 import { checkTelVerification } from './actions';
+import { getNextVerificationStep } from '@/lib/verification';
 
 type FormValues = {
   tel: string;
@@ -43,7 +44,8 @@ export default function PhoneVerification() {
 
   useEffect(() => {
     if (userDetails?.isPhoneConfirmed) {
-      router.replace('/verification/documents');
+      const nextStep = getNextVerificationStep(userDetails);
+      router.replace(`/verification/${nextStep}`);
     }
   }, [userDetails, router]);
 

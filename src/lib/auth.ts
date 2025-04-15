@@ -1,13 +1,21 @@
 import { UserDetails } from '@/features/auth/types';
 import NextAuth from 'next-auth';
-import authConfig from './auth.config';
 import Cookies from 'js-cookie';
-
+import { authConfig } from '@/lib/auth.config';
 export const { auth, handlers, signOut, signIn } = NextAuth(authConfig);
 
+const REFRESH_TOKEN_KEY = 'refresh_token';
 const TOKEN_KEY = 'auth_token';
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const userDetails = process.env.NEXT_PUBLIC_API_USER_DETAILS;
+
+export const saveRefreshToken = (token: string) => {
+  Cookies.set(REFRESH_TOKEN_KEY, token, {
+    expires: 30,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/'
+  });
+};
 
 export const saveToken = (token: string) => {
   Cookies.set(TOKEN_KEY, token, {
@@ -51,4 +59,6 @@ export const getUserDetails = async (): Promise<UserDetails> => {
   }
 
   return response.json();
+
+  console.log('userDetails', userDetails);
 };

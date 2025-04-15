@@ -71,6 +71,7 @@ export async function checkEmailVerification(
       return { success: false, message: errorMessage };
     }
 
+    // Обновляем данные пользователя после успешной верификации
     await updateUserDetails();
 
     return request;
