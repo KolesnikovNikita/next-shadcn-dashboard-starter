@@ -79,14 +79,21 @@ export async function checkTelVerification(
 
     const result = await response.json();
 
-    if (!result.success) {
-      await updateUserDetails();
-      return { success: true, data: result.data };
+    // Получаем обновленные данные
+    const userDetails = await updateUserDetails(token);
+    if (!userDetails) {
+      return {
+        success: false,
+        message:
+          'Verification successful but failed to get updated user details'
+      };
     }
 
     return {
-      success: false,
-      message: result.message || 'Verification failed'
+      success: true,
+      message: 'Check Phone Verification successfully',
+      result,
+      userDetails
     };
   } catch (error) {
     return {

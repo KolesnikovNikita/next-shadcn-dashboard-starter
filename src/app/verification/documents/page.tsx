@@ -7,7 +7,7 @@ import { useUserStore } from '@/store/user';
 export default function DocumentsVerification() {
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
-  console.log('userDetails', userDetails);
+
   useEffect(() => {
     if (!userDetails?.isEmailConfirmed) {
       router.replace('/verification/email');

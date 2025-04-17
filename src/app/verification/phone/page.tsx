@@ -38,7 +38,7 @@ export default function PhoneVerification() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
-  console.log('User details:', userDetails);
+  console.log('userDetails', userDetails);
 
   useEffect(() => {
     if (userDetails?.isPhoneConfirmed) {
@@ -91,7 +91,8 @@ export default function PhoneVerification() {
 
       const result = await checkTelVerification(code, tel, token);
 
-      if (result.success) {
+      if (result.success && result.userDetails) {
+        useUserStore.getState().setUserDetails(result.userDetails);
         router.push('/verification/documents');
       } else {
         setError(result.message || 'Verification failed. Please try again');

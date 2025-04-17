@@ -86,19 +86,14 @@ export const refreshAccessToken = async () => {
   }
 };
 
-export const getUserDetails = async (): Promise<UserDetails> => {
-  const accessToken = getToken();
-  if (!accessToken) {
-    throw new Error('No access token found');
-  }
-
+export const getUserDetails = async (token: string): Promise<UserDetails> => {
   const url = `${baseUrl}${userDetails}`;
 
   const response = await fetch(url, {
     method: 'GET',
     headers: {
       accept: 'text/plain',
-      Authorization: `Bearer ${accessToken}`
+      Authorization: `Bearer ${token}`
     }
   });
 

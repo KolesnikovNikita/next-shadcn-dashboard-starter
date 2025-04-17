@@ -63,20 +63,14 @@ export async function checkEmailVerification(
       const errorMessage = await response.text();
       return { success: false, message: errorMessage };
     }
-
+    await updateUserDetails(token);
     const result = await response.json();
-
-    if (!result.success) {
-      await updateUserDetails();
-      return { success: true, data: result.data };
-    }
-
     return {
-      success: false,
-      message: result.message || 'Verification failed'
+      success: true,
+      message: 'Check Email Verification successfully',
+      result
     };
   } catch (error) {
-    console.error('Error in email verification:', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'An error occurred'

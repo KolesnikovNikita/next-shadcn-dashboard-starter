@@ -27,7 +27,7 @@ export default function EmailVerification() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
-  console.log('User details:', userDetails);
+  console.log('userDetails', userDetails);
 
   // Check if email is already verified
   useEffect(() => {

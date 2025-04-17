@@ -1,22 +1,15 @@
-import { getUserDetails, getToken } from '@/lib/auth';
-import { useUserStore } from '@/store/user';
+import { getUserDetails } from '@/lib/auth';
 
-export async function updateUserDetails() {
+export async function updateUserDetails(token: string) {
   try {
-    const token = getToken();
-    if (!token) {
-      console.error('No access token found during user details update');
-      throw new Error('No access token found');
+    const userDetails = await getUserDetails(token);
+    if (!userDetails) {
+      console.error('Failed to get user details from database');
+      return null;
     }
-
-    const userDetails = await getUserDetails();
-    if (userDetails) {
-      useUserStore.getState().setUserDetails(userDetails);
-      return userDetails;
-    }
-    return null;
+    return userDetails;
   } catch (error) {
-    console.error('Error updating user details:', error);
+    console.error('Error getting user details:', error);
     return null;
   }
 }

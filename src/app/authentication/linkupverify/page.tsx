@@ -19,7 +19,7 @@ export default function LinkUpVerify() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-
+  console.log('token', token);
   const setUserDetails = useUserStore((state) => state.setUserDetails);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function LinkUpVerify() {
 
         const data: TokenResponse = await response.json();
         const { accessToken } = data;
-
+        console.log('accessToken', accessToken);
         if (!response.ok) {
           throw new Error('Failed to send token');
         }
@@ -46,7 +46,7 @@ export default function LinkUpVerify() {
 
         if (savedToken === accessToken) {
           try {
-            const userDetails: UserDetails = await getUserDetails();
+            const userDetails: UserDetails = await getUserDetails(accessToken);
 
             setUserDetails(userDetails);
 
