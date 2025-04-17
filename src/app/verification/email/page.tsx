@@ -27,6 +27,7 @@ export default function EmailVerification() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
+  console.log('User details:', userDetails);
 
   // Check if email is already verified
   useEffect(() => {
@@ -49,7 +50,6 @@ export default function EmailVerification() {
         return;
       }
       const result = await checkEmailVerification(code, email, token);
-
       if (result.success) {
         router.push('/verification/phone');
       } else {

@@ -36,8 +36,6 @@ export default function LinkUpVerify() {
         const data: TokenResponse = await response.json();
         const { accessToken } = data;
 
-        console.log('Received accessToken:', accessToken);
-
         if (!response.ok) {
           throw new Error('Failed to send token');
         }
@@ -45,14 +43,10 @@ export default function LinkUpVerify() {
         saveToken(accessToken);
 
         const savedToken = getToken();
-        console.log('savedToken', savedToken);
-        console.log('tokens matched', savedToken === accessToken);
 
         if (savedToken === accessToken) {
           try {
             const userDetails: UserDetails = await getUserDetails();
-
-            console.log('User Details:', userDetails);
 
             setUserDetails(userDetails);
 

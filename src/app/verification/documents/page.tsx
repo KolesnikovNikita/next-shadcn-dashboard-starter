@@ -7,14 +7,11 @@ import { useUserStore } from '@/store/user';
 export default function DocumentsVerification() {
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
-
-  // Check if previous steps are verified
+  console.log('userDetails', userDetails);
   useEffect(() => {
     if (!userDetails?.isEmailConfirmed) {
-      // If email is not confirmed, redirect to email verification page
       router.replace('/verification/email');
     } else if (!userDetails?.isPhoneConfirmed) {
-      // If phone is not confirmed, redirect to phone verification page
       router.replace('/verification/phone');
     }
   }, [userDetails, router]);

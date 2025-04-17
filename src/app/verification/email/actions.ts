@@ -2,6 +2,7 @@
 
 import { z } from 'zod';
 import { updateUserDetails } from '@/lib/auth/updateUserDetails';
+import { withTokenRefresh } from '@/lib/auth/withTokenRefresh';
 
 const emailSchema = z.object({
   email: z.string().email()
@@ -18,32 +19,24 @@ export async function verifyEmail(formData: FormData, token: string) {
 
     const { email: validateEmail } = emailSchema.parse({ email });
 
-    const response = await fetch(
-      `${baseUrl}${emailVerification}?email=${validateEmail}`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'text/plain',
-          Authorization: token ? `Bearer ${token}` : ''
-        }
-      }
-    );
+    const url = `${baseUrl}${emailVerification}?email=${validateEmail}`;
+    const response = await withTokenRefresh({ url }, token);
 
     if (!response.ok) {
       const errorMessage = await response.text();
-
       return { success: false, message: errorMessage };
     }
 
     const result = await response.json();
-
     return { success: true, message: 'Verification successfully', result };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { message: 'Invalid email', success: false };
     }
-
-    return { message: 'Internal server error', success: false };
+    return {
+      message: error instanceof Error ? error.message : 'Internal server error',
+      success: false
+    };
   }
 }
 
@@ -55,33 +48,38 @@ export async function checkEmailVerification(
   const url = `${baseUrl}${checkEmailVerificationCode}?email=${email}&code=${code}`;
 
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'text/plain',
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const request = await response.json();
+    const response = await withTokenRefresh(
+      {
+        url,
+        method: 'POST',
+        headers: {
+          accept: 'text/plain'
+        }
+      },
+      token
+    );
 
     if (!response.ok) {
       const errorMessage = await response.text();
-
       return { success: false, message: errorMessage };
     }
 
-    // Обновляем данные пользователя после успешной верификации
-    await updateUserDetails();
+    const result = await response.json();
 
-    return request;
-  } catch (error) {
+    if (!result.success) {
+      await updateUserDetails();
+      return { success: true, data: result.data };
+    }
+
     return {
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Verification failed. Please try again',
-      success: false
+      success: false,
+      message: result.message || 'Verification failed'
+    };
+  } catch (error) {
+    console.error('Error in email verification:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'An error occurred'
     };
   }
 }

@@ -1,7 +1,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-
 import {
   Form,
   FormField,
@@ -39,8 +38,7 @@ export default function PhoneVerification() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const userDetails = useUserStore((state) => state.userDetails);
-
-  console.log('userDetails', userDetails);
+  console.log('User details:', userDetails);
 
   useEffect(() => {
     if (userDetails?.isPhoneConfirmed) {
